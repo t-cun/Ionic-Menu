@@ -1,5 +1,39 @@
 <ion-view view-title="Ristorante con Fusion">
   <ion-content>
-    <h1>Ristorante con Fusion</h1>
+    <div class="card">
+      <div class="item item-divider">
+        Our Lipsmacking Culinary Creations
+        <span class="badge badge-assertive">{{promoDish.label}}</span>
+      </div>
+      <div class="item item-thumbnail-left item-text-wrap">
+        <img ng-src="{{baseURL+promoDish.image}}" alt="{{promoDish.name}}">
+        <h2>{{promoDish.name}} <span class="badge">{{promoDish.price | currency}}</span>
+        </h2>
+        <p>{{promoDish.description}}</p>
+      </div>
+    </div>
+    <div class="card">
+        <div class="item item-divider">
+          This Month's Promotions
+          <span class="badge badge-assertive">{{promotion.label}}</span>
+        </div>
+        <div class="item item-thumbnail-left item-text-wrap">
+             <img ng-src="{{baseURL+promo.image}}" alt="{{promo.name}}">
+              <h2>{{promo.name}}
+               <span class="badge">{{promo.price | currency}}</span></h2>
+              <p>{{promo.description}}</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="item item-divider">
+          Meet our Culinary Specialists
+        </div>
+        <div class="item item-thumbnail-left item-text-wrap">
+             <img ng-src="{{baseURL+promoLeader.image}}" alt="{{promoLeader.name}}">
+              <h2>{{promoLeader.name}}</h2>
+              <h4>{{promoLeader.designation}}</h4>
+              <p>{{promoLeader.description}}</p>
+        </div>
+    </div>
   </ion-content>
 </ion-view>
