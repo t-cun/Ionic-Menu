@@ -65,13 +65,14 @@ angular.module('conFusion.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
   $scope.baseURL = baseURL;
   $scope.tab = 1;
   $scope.orderText = '';
   $scope.showDetails = false;
   $scope.showMenu = false;
   $scope.message = "Loading...";
+
   menuFactory.getDishes().query(
     function(response) {
       $scope.dishes = response;
@@ -102,6 +103,12 @@ angular.module('conFusion.controllers', [])
   $scope.toggleDetails = function() {
     $scope.showDetails = !$scope.showDetails;
   };
+
+  $scope.addFavorite = function(index) {
+    favoriteFactory.addToFavorites(index);
+    $ionicListDelegate.closeOptionButtons();
+  };
+
 }])
 
 .controller('ContactController', ['$scope', function($scope) {
@@ -216,4 +223,45 @@ angular.module('conFusion.controllers', [])
     }
   );
 }])
-;
+
+.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+  $scope.baseURL = baseURL;
+  $scope.showDelete = false;
+  $scope.favorites = favoriteFactory.getFavorites();
+
+  menuFactory.getDishes().query(
+    function(response) {
+      $scope.dishes = response;
+      $scope.showMenu = true;
+    },
+    function(response) {
+      $scope.message = "Error: " + response.status + " " + response.statusText;
+    }
+  );
+
+  $scope.toggleDelete = function() {
+    $scope.showDelete = !$scope.showDelete;
+  };
+
+  $scope.deleteFavorite = function(index) {
+    favoriteFactory.deleteFromFavorites(index);
+    $scope.showDelete = false;
+  };
+
+}])
+
+.filter('favoriteFilter', function() {
+  return function(dishes, favorites) {
+    var out = [];
+
+    for(var i = 0; i < favorites.length; i++) {
+      for(var j = 0; j < dishes.length; j++) {
+        if(dishes[j].id === favorites[i].id) {
+          out.push(dishes[j]);
+        }
+      }
+    }
+
+    return out;
+  }
+});
