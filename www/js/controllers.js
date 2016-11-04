@@ -224,9 +224,17 @@ angular.module('conFusion.controllers', [])
   );
 }])
 
-.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading) {
+
+  $scope.$on('$ionicView.enter', function(e) {
+    $scope.showDelete = false;
+  });
+
+  $ionicLoading.show({
+    template: '<ion-spinner></ion-spinner>'
+  })
+
   $scope.baseURL = baseURL;
-  $scope.showDelete = false;
   $scope.favorites = favoriteFactory.getFavorites();
 
   menuFactory.getDishes().query(
@@ -239,12 +247,24 @@ angular.module('conFusion.controllers', [])
     }
   );
 
+  $ionicLoading.hide();
+
   $scope.toggleDelete = function() {
     $scope.showDelete = !$scope.showDelete;
   };
 
   $scope.deleteFavorite = function(index) {
-    favoriteFactory.deleteFromFavorites(index);
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Confirm Delete',
+      template: 'Are you sure you want to delete this item?'
+    });
+
+    confirmPopup.then(function(res) {
+      if(res) {
+        favoriteFactory.deleteFromFavorites(index);
+      }
+    });
+
     $scope.showDelete = false;
   };
 
