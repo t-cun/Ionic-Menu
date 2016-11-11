@@ -1,22 +1,23 @@
 'use strict';
 
 angular.module('conFusion.services', ['ngResource'])
-.constant("baseURL", "http://192.168.222.223:3000/")
+.constant("jsonURL", 'http://192.168.222.223:3000/')
+.constant("imgURL", 'https://firebasestorage.googleapis.com/v0/b/coursera-angular-js.appspot.com/o/');
 
-.factory('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+.factory('menuFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
 
-  return $resource(baseURL+"dishes/:id" , null, {'update':{method:'PUT'}});
-
-}])
-
-.factory('promotionFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-
-  return $resource(baseURL + "promotions/:id");
+  return $resource(jsonURL+"dishes/:id" , null, {'update':{method:'PUT'}});
 
 }])
 
-.factory('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-  var leadership = $resource(baseURL+"leadership/:id" , null, {'update':{method:'PUT'}});
+.factory('promotionFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
+
+  return $resource(jsonURL + "promotions/:id");
+
+}])
+
+.factory('corporateFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
+  var leadership = $resource(jsonURL+"leadership/:id" , null, {'update':{method:'PUT'}});
 
   return {
     getLeaders: function() {
@@ -25,8 +26,8 @@ angular.module('conFusion.services', ['ngResource'])
   };
 }])
 
-.factory('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-  var feedback = $resource(baseURL+"feedback/:id" , null, {'add':{method:'POST'}});
+.factory('feedbackFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
+  var feedback = $resource(jsonURL+"feedback/:id" , null, {'add':{method:'POST'}});
 
   return {
     putFeedback: function() {
@@ -35,9 +36,9 @@ angular.module('conFusion.services', ['ngResource'])
   };
 }])
 
-.factory('favoriteFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+.factory('favoriteFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
   var favFac = {};
-  var favorites = []; //$resource(baseURL+"favorites/:id", null, {'add':method:'POST'});
+  var favorites = []; //$resource(jsonURL+"favorites/:id", null, {'add':method:'POST'});
 
   favFac.addToFavorites = function (index) {
     for (var i = 0; i < favorites.length; i++) {

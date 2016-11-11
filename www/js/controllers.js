@@ -60,8 +60,8 @@ angular.module('conFusion.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
-  $scope.baseURL = baseURL;
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'jsonURL', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, jsonURL, $ionicListDelegate) {
+  $scope.jsonURL = jsonURL;
   $scope.tab = 1;
   $scope.orderText = '';
   $scope.showDetails = false;
@@ -133,8 +133,8 @@ angular.module('conFusion.controllers', [])
   };
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, $ionicModal, $ionicPopover) {
-  $scope.baseURL = baseURL;
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'jsonURL', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, jsonURL, $ionicModal, $ionicPopover) {
+  $scope.jsonURL = jsonURL;
   $scope.dish = dish;
 
   $scope.openPopover = function($event) {
@@ -196,8 +196,8 @@ angular.module('conFusion.controllers', [])
   });
 }])
 
-.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'baseURL', function($scope, menuFactory, corporateFactory, promotionFactory, baseURL) {
-  $scope.baseURL = baseURL;
+.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'jsonURL', function($scope, menuFactory, corporateFactory, promotionFactory, jsonURL) {
+  $scope.jsonURL = jsonURL;
   $scope.showDish = false;
   $scope.showPromo = false;
   $scope.showLeader = false;
@@ -236,8 +236,8 @@ angular.module('conFusion.controllers', [])
     );
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
-  $scope.baseURL = baseURL;
+.controller('AboutController', ['$scope', 'corporateFactory', 'jsonURL', function($scope, corporateFactory, jsonURL) {
+  $scope.jsonURL = jsonURL;
   $scope.showLeaders = false;
   corporateFactory.getLeaders().query(
     function(response) {
@@ -250,13 +250,13 @@ angular.module('conFusion.controllers', [])
   );
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'jsonURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, jsonURL, $ionicListDelegate, $ionicPopup, $ionicLoading) {
 
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
   });
 
-  $scope.baseURL = baseURL;
+  $scope.jsonURL = jsonURL;
   $scope.favorites = favorites;
   $scope.dishes = dishes;
 
