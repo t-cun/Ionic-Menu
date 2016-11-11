@@ -18,7 +18,7 @@
   <ion-content>
     <ion-list>
       <ion-item ng-repeat="dish in dishes | filter:{category: orderText}" href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
-        <img ng-src="{{jsonURL+dish.image}}">
+        <img ng-src="{{imgURL + dish.image + imgTail}}">
         <h2>{{dish.name}}
           <span style="font-size:75%">{{dish.price | currency}}</span>
           <span class="badge badge-assertive">{{dish.label}}</span>

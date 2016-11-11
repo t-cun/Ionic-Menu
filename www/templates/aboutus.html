@@ -22,7 +22,7 @@
       </div>
       <ion-list>
         <ion-item ng-repeat="leader in leaders" class="item item-thumbnail-left item-avatar item-text-wrap">
-          <img ng-src="{{jsonURL+leader.image}}" alt="{{leader.name}}">
+          <img ng-src="{{imgURL + leader.image + imgTail}}" alt="{{leader.name}}">
           <h2>{{leader.name}}</h2>
           <h3>{{leader.designation}}</h3>
           <p>{{leader.description}}</p>

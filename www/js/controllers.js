@@ -60,8 +60,10 @@ angular.module('conFusion.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'jsonURL', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, jsonURL, $ionicListDelegate) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'jsonURL', 'imgURL', 'imgTail', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, jsonURL, imgURL, imgTail, $ionicListDelegate) {
   $scope.jsonURL = jsonURL;
+  $scope.imgURL = imgURL;
+  $scope.imgTail = imgTail;
   $scope.tab = 1;
   $scope.orderText = '';
   $scope.showDetails = false;
@@ -133,8 +135,10 @@ angular.module('conFusion.controllers', [])
   };
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'jsonURL', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, jsonURL, $ionicModal, $ionicPopover) {
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'jsonURL', 'imgURL', 'imgTail', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, jsonURL, imgURL, imgTail, $ionicModal, $ionicPopover) {
   $scope.jsonURL = jsonURL;
+  $scope.imgURL = imgURL;
+  $scope.imgTail = imgTail;
   $scope.dish = dish;
 
   $scope.openPopover = function($event) {
@@ -196,8 +200,10 @@ angular.module('conFusion.controllers', [])
   });
 }])
 
-.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'jsonURL', function($scope, menuFactory, corporateFactory, promotionFactory, jsonURL) {
+.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'jsonURL', 'imgURL', 'imgTail', function($scope, menuFactory, corporateFactory, promotionFactory, jsonURL, imgURL, imgTail) {
   $scope.jsonURL = jsonURL;
+  $scope.imgURL = imgURL;
+  $scope.imgTail = imgTail;
   $scope.showDish = false;
   $scope.showPromo = false;
   $scope.showLeader = false;
@@ -236,8 +242,11 @@ angular.module('conFusion.controllers', [])
     );
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', 'jsonURL', function($scope, corporateFactory, jsonURL) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'jsonURL', 'imgURL', 'imgTail', function($scope, corporateFactory, jsonURL, imgURL, imgTail) {
   $scope.jsonURL = jsonURL;
+  $scope.imgURL = imgURL;
+  $scope.imgTail = imgTail;
+
   $scope.showLeaders = false;
   corporateFactory.getLeaders().query(
     function(response) {
@@ -250,13 +259,15 @@ angular.module('conFusion.controllers', [])
   );
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'jsonURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, jsonURL, $ionicListDelegate, $ionicPopup, $ionicLoading) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'jsonURL', 'imgURL', 'imgTail', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, jsonURL, imgURL, imgTail, $ionicListDelegate, $ionicPopup, $ionicLoading) {
 
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
   });
 
   $scope.jsonURL = jsonURL;
+  $scope.imgURL = imgURL;
+  $scope.imgTail = imgTail;
   $scope.favorites = favorites;
   $scope.dishes = dishes;
 

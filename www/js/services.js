@@ -1,23 +1,24 @@
 'use strict';
 
 angular.module('conFusion.services', ['ngResource'])
-.constant("jsonURL", 'http://192.168.222.223:3000/')
-.constant("imgURL", 'https://firebasestorage.googleapis.com/v0/b/coursera-angular-js.appspot.com/o/');
+.constant('jsonURL', 'https://coursera-angular-js.firebaseio.com/')
+.constant('imgURL', 'https://firebasestorage.googleapis.com/v0/b/coursera-angular-js.appspot.com/o/')
+.constant('imgTail', '?alt=media&token=79907ce4-952b-486e-8b75-b338e478a6dc')
 
 .factory('menuFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
 
-  return $resource(jsonURL+"dishes/:id" , null, {'update':{method:'PUT'}});
+  return $resource(jsonURL + 'dishes/:id' + '.json', null, {'update':{method:'PUT'}});
 
 }])
 
 .factory('promotionFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
 
-  return $resource(jsonURL + "promotions/:id");
+  return $resource(jsonURL + 'promotions/:id' + '.json');
 
 }])
 
 .factory('corporateFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
-  var leadership = $resource(jsonURL+"leadership/:id" , null, {'update':{method:'PUT'}});
+  var leadership = $resource(jsonURL + 'leadership/:id' + '.json' , null, {'update':{method:'PUT'}});
 
   return {
     getLeaders: function() {
@@ -27,7 +28,7 @@ angular.module('conFusion.services', ['ngResource'])
 }])
 
 .factory('feedbackFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
-  var feedback = $resource(jsonURL+"feedback/:id" , null, {'add':{method:'POST'}});
+  var feedback = $resource(jsonURL + 'feedback/:id' + '.json' , null, {'add':{method:'POST'}});
 
   return {
     putFeedback: function() {
