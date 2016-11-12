@@ -1,6 +1,6 @@
 angular.module('SpiceShack.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -12,6 +12,7 @@ angular.module('SpiceShack.controllers', [])
   // Form data for the login modal
   $scope.loginData = $localStorage.getObject('userinfo', '{}');
   $scope.reservation = {};
+  $scope.registration = {};
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -56,6 +57,56 @@ angular.module('SpiceShack.controllers', [])
       $scope.closeReserve();
     }, 1000);
   };
+
+  // Create the registration modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/register.html', {
+      scope: $scope
+  }).then(function (modal) {
+      $scope.registerForm = modal;
+  });
+
+  // Triggered in the registration modal to close it
+  $scope.closeRegister = function () {
+      $scope.registerForm.hide();
+  };
+
+  // Open the registration modal
+  $scope.register = function () {
+      $scope.registerForm.show();
+  };
+
+  // Perform the registration action when the user submits the registration form
+  $scope.doRegister = function () {
+      // Simulate a registration delay. Remove this and replace with your registration
+      // code if using a registration system
+      $timeout(function () {
+          $scope.closeRegister();
+      }, 1000);
+  };
+
+  $ionicPlatform.ready(function() {
+    var options = {
+        quality: 50,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 100,
+        targetHeight: 100,
+        popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false
+    };
+    $scope.takePicture = function() {
+      $cordovaCamera.getPicture(options).then(function(imageData) {
+          $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+      }, function(err) {
+          console.log(err);
+      });
+
+      $scope.registerForm.show();
+
+    };
+  });
 
 })
 
