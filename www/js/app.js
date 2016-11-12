@@ -135,9 +135,6 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
           resolve: {
             dishes: ['menuFactory', function(menuFactory){
               return menuFactory.query();
-            }],
-            favorites: ['favoriteFactory', function(favoriteFactory) {
-              return favoriteFactory.getFavorites();
             }]
           }
         }

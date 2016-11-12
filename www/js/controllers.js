@@ -207,15 +207,15 @@ angular.module('conFusion.controllers', [])
   $scope.leaders = leaders;
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'imgURL', 'imgTail', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, imgURL, imgTail, $ionicListDelegate, $ionicPopup, $ionicLoading) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favoriteFactory', 'imgURL', 'imgTail', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favoriteFactory, imgURL, imgTail, $ionicListDelegate, $ionicPopup, $ionicLoading) {
 
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
+    $scope.favorites = favoriteFactory.getFavorites();
   });
 
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
-  $scope.favorites = favorites;
   $scope.dishes = dishes;
 
   $scope.toggleDelete = function() {
@@ -231,6 +231,7 @@ angular.module('conFusion.controllers', [])
     confirmPopup.then(function(res) {
       if(res) {
         favoriteFactory.deleteFromFavorites(index);
+        $scope.favorites = favoriteFactory.getFavorites();
       }
     });
 
