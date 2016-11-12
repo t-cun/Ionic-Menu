@@ -32,7 +32,6 @@ angular.module('conFusion.controllers', [])
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
     $localStorage.storeObject('userinfo', $scope.loginData);
   };
 
@@ -60,37 +59,27 @@ angular.module('conFusion.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'jsonURL', 'imgURL', 'imgTail', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, jsonURL, imgURL, imgTail, $ionicListDelegate) {
-  $scope.jsonURL = jsonURL;
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'dishes', 'imgURL', 'imgTail', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, dishes, imgURL, imgTail, $ionicListDelegate) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.tab = 1;
   $scope.orderText = '';
   $scope.showDetails = false;
   $scope.showMenu = false;
-  $scope.message = "Loading...";
-
-  menuFactory.query(
-    function(response) {
-      $scope.dishes = response;
-      $scope.showMenu = true;
-    },
-    function(response) {
-      $scope.message = "Error: " + response.status + " " + response.statusText;
-    }
-  );
+  $scope.message = 'Loading...';
+  $scope.dishes = dishes;
 
   $scope.select = function(setTab) {
     $scope.tab = setTab;
 
     if(setTab === 2) {
-      $scope.orderText = "appetizer";
+      $scope.orderText = 'appetizer';
     } else if (setTab === 3) {
-      $scope.orderText = "mains";
+      $scope.orderText = 'mains';
     } else if (setTab === 4) {
-      $scope.orderText = "dessert";
+      $scope.orderText = 'dessert';
     } else {
-      $scope.orderText = "";
+      $scope.orderText = '';
     }
   };
 
@@ -135,8 +124,7 @@ angular.module('conFusion.controllers', [])
   };
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'jsonURL', 'imgURL', 'imgTail', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, jsonURL, imgURL, imgTail, $ionicModal, $ionicPopover) {
-  $scope.jsonURL = jsonURL;
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'imgURL', 'imgTail', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, imgURL, imgTail, $ionicModal, $ionicPopover) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.dish = dish;
@@ -200,72 +188,31 @@ angular.module('conFusion.controllers', [])
   });
 }])
 
-.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'jsonURL', 'imgURL', 'imgTail', function($scope, menuFactory, corporateFactory, promotionFactory, jsonURL, imgURL, imgTail) {
-  $scope.jsonURL = jsonURL;
+.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'promoDish', 'promo', 'promoLeader', 'imgURL', 'imgTail', function($scope, menuFactory, corporateFactory, promotionFactory, promoDish, promo, promoLeader, imgURL, imgTail) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.showDish = false;
   $scope.showPromo = false;
   $scope.showLeader = false;
-  $scope.message = "Loading...";
-  $scope.promoDish = menuFactory.get({id:0})
-    .$promise.then(
-      function(response) {
-        $scope.promoDish = response;
-        $scope.showDish = true;
-      },
-      function(response) {
-        $scope.message = "Error: " + response.status + " " + response.statusText;
-      }
-    );
-
-  $scope.promo = promotionFactory.get({id:0})
-    .$promise.then(
-      function(response) {
-        $scope.promo = response;
-        $scope.showPromo = true;
-      },
-      function(response) {
-        $scope.message = "Error: " + response.status + " " + response.statusText;
-      }
-    );
-
-  $scope.promoLeader = corporateFactory.getLeaders().get({id:3})
-    .$promise.then(
-      function(response) {
-        $scope.promoLeader = response;
-        $scope.showLeader = true;
-      },
-      function(response) {
-        $scope.message = "Error: " + response.status + " " + response.statusText;
-      }
-    );
+  $scope.message = 'Loading...';
+  $scope.promoDish = promoDish;
+  $scope.promo = promo;
+  $scope.promoLeader = promoLeader;
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', 'jsonURL', 'imgURL', 'imgTail', function($scope, corporateFactory, jsonURL, imgURL, imgTail) {
-  $scope.jsonURL = jsonURL;
+.controller('AboutController', ['$scope', 'corporateFactory', 'leaders', 'imgURL', 'imgTail', function($scope, corporateFactory, leaders, imgURL, imgTail) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
-
   $scope.showLeaders = false;
-  corporateFactory.getLeaders().query(
-    function(response) {
-      $scope.leaders = response;
-      $scope.showLeaders = true;
-    },
-    function(response) {
-      $scope.message = "Error: " + response.status + " " + response.statusText;
-    }
-  );
+  $scope.leaders = leaders;
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'jsonURL', 'imgURL', 'imgTail', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, jsonURL, imgURL, imgTail, $ionicListDelegate, $ionicPopup, $ionicLoading) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'imgURL', 'imgTail', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favorites, favoriteFactory, imgURL, imgTail, $ionicListDelegate, $ionicPopup, $ionicLoading) {
 
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
   });
 
-  $scope.jsonURL = jsonURL;
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.favorites = favorites;
