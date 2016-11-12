@@ -59,7 +59,13 @@ angular.module('SpiceShack.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'dishes', 'imgURL', 'imgTail', '$ionicListDelegate', function($scope, menuFactory, favoriteFactory, dishes, imgURL, imgTail, $ionicListDelegate) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory',
+                               'dishes', 'imgURL', 'imgTail', '$ionicListDelegate',
+                               '$ionicPlatform', '$cordovaLocalNotification',
+                               '$cordovaToast', function($scope, menuFactory,
+                                favoriteFactory, dishes, imgURL, imgTail,
+                                $ionicListDelegate, $ionicPlatform,
+                                $cordovaLocalNotification, $cordovaToast) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.tab = 1;
@@ -93,6 +99,20 @@ angular.module('SpiceShack.controllers', [])
   $scope.addFavorite = function(index) {
     favoriteFactory.addToFavorites(index);
     $ionicListDelegate.closeOptionButtons();
+    $ionicPlatform.ready(function() {
+      $cordovaLocalNotification.schedule({
+        id: 1,
+        title: 'Added Favorite',
+        text: $scope.dishes[index].name
+      });
+      $cordovaToast.show('Added Favorite ' + $scope.dishes[index].name,
+                         'long', 'center')
+       .then(function(success) {
+         //success
+       }, function(error) {
+         //error
+       });
+    });
   };
 
 }])
@@ -109,7 +129,9 @@ angular.module('SpiceShack.controllers', [])
 
 }])
 
-.controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
+.controller('FeedbackController', ['$scope', 'feedbackFactory',
+                                  function($scope, feedbackFactory) {
+
   $scope.sendFeedback = function() {
     if ($scope.feedback.agree && ($scope.feedback.mychannel === "")&& !$scope.feedback.mychannel) {
       $scope.invalidChannelSelection = true;
@@ -124,7 +146,12 @@ angular.module('SpiceShack.controllers', [])
   };
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'imgURL', 'imgTail', '$ionicModal', '$ionicPopover', function($scope, $stateParams, dish, menuFactory, favoriteFactory, imgURL, imgTail, $ionicModal, $ionicPopover) {
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish',
+                                     'menuFactory', 'favoriteFactory', 'imgURL',
+                                     'imgTail', '$ionicModal', '$ionicPopover',
+                                     function($scope, $stateParams, dish,
+                                     menuFactory, favoriteFactory, imgURL,
+                                     imgTail, $ionicModal, $ionicPopover) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.dish = dish;
@@ -188,7 +215,12 @@ angular.module('SpiceShack.controllers', [])
   });
 }])
 
-.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', 'promoDish', 'promo', 'promoLeader', 'imgURL', 'imgTail', function($scope, menuFactory, corporateFactory, promotionFactory, promoDish, promo, promoLeader, imgURL, imgTail) {
+.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory',
+                                'promotionFactory', 'promoDish', 'promo',
+                                'promoLeader', 'imgURL', 'imgTail',
+                                function($scope, menuFactory, corporateFactory,
+                                promotionFactory, promoDish, promo, promoLeader,
+                                imgURL, imgTail) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.showDish = false;
@@ -200,14 +232,21 @@ angular.module('SpiceShack.controllers', [])
   $scope.promoLeader = promoLeader;
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', 'leaders', 'imgURL', 'imgTail', function($scope, corporateFactory, leaders, imgURL, imgTail) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'leaders',
+                                'imgURL', 'imgTail', function($scope,
+                                corporateFactory, leaders, imgURL, imgTail) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.showLeaders = false;
   $scope.leaders = leaders;
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favoriteFactory', 'imgURL', 'imgTail', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', function($scope, dishes, favoriteFactory, imgURL, imgTail, $ionicListDelegate, $ionicPopup, $ionicLoading) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favoriteFactory',
+                                    'imgURL', 'imgTail', '$ionicListDelegate',
+                                    '$ionicPopup', '$ionicLoading',
+                                    function($scope, dishes, favoriteFactory,
+                                    imgURL, imgTail, $ionicListDelegate,
+                                    $ionicPopup, $ionicLoading) {
 
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
