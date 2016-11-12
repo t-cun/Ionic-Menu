@@ -1,4 +1,4 @@
-angular.module('conFusion.controllers', [])
+angular.module('SpiceShack.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage) {
 
@@ -161,7 +161,7 @@ angular.module('conFusion.controllers', [])
 
   $scope.addComment = function(comment) {
     $scope.dish.comments.push(comment);
-    menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+    menuFactory.update({id:$scope.dish.id},$scope.dish);
   };
 
   $scope.postComment = function() {
