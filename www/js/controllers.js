@@ -200,9 +200,11 @@ angular.module('SpiceShack.controllers', [])
 .controller('DishDetailController', ['$scope', '$stateParams', 'dish',
                                      'menuFactory', 'favoriteFactory', 'imgURL',
                                      'imgTail', '$ionicModal', '$ionicPopover',
+                                     '$cordovaLocalNotification', '$cordovaToast',
                                      function($scope, $stateParams, dish,
                                      menuFactory, favoriteFactory, imgURL,
-                                     imgTail, $ionicModal, $ionicPopover) {
+                                     imgTail, $ionicModal, $ionicPopover,
+                                     $cordovaLocalNotification, $cordovaToast) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.dish = dish;
@@ -214,7 +216,6 @@ angular.module('SpiceShack.controllers', [])
       $scope.popover = popover;
       $scope.popover.show($event);
     });
-
   };
 
   $scope.showCommentForm = function() {
@@ -228,8 +229,20 @@ angular.module('SpiceShack.controllers', [])
   };
 
   $scope.addFavorite = function(index) {
+    $cordovaLocalNotification.schedule({
+      id: 1,
+      title: 'Added Favorite',
+      text: $scope.dish.name
+    });
     $scope.popover.hide();
     favoriteFactory.addToFavorites(index);
+    $cordovaToast.show('Added Favorite ' + $scope.dish.name,
+                       'long', 'center')
+     .then(function(success) {
+       //success
+     }, function(error) {
+       //error
+     });
   };
 
   $scope.closeCommentForm = function() {
@@ -294,10 +307,11 @@ angular.module('SpiceShack.controllers', [])
 
 .controller('FavoritesController', ['$scope', 'dishes', 'favoriteFactory',
                                     'imgURL', 'imgTail', '$ionicListDelegate',
-                                    '$ionicPopup', '$ionicLoading',
-                                    function($scope, dishes, favoriteFactory,
-                                    imgURL, imgTail, $ionicListDelegate,
-                                    $ionicPopup, $ionicLoading) {
+                                    '$ionicPopup', '$ionicLoading', '$cordovaToast',
+                                    '$cordovaVibration', function($scope, dishes,
+                                    favoriteFactory, imgURL, imgTail, $ionicListDelegate,
+                                    $ionicPopup, $ionicLoading, $cordovaToast,
+                                    $cordovaVibration) {
 
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
@@ -320,8 +334,16 @@ angular.module('SpiceShack.controllers', [])
 
     confirmPopup.then(function(res) {
       if(res) {
+        $cordovaVibration.vibrate(150);
         favoriteFactory.deleteFromFavorites(index);
         $scope.favorites = favoriteFactory.getFavorites();
+        $cordovaToast.show('Removed Favorite ' + $scope.dishes[index].name,
+                           'long', 'center')
+         .then(function(success) {
+           //success
+         }, function(error) {
+           //error
+         });
       }
     });
 

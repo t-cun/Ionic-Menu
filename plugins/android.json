@@ -33,6 +33,9 @@
         },
         "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         }
     },
     "dependent_plugins": {
