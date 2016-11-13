@@ -7,8 +7,8 @@
       </div>
       <div class="item item-thumbnail-left item-text-wrap">
         <img ng-src="{{imgURL + promoDish.image + imgTail}}" alt="{{promoDish.name}}">
-        <h2>{{promoDish.name}} <span class="badge">{{promoDish.price | currency}}</span>
-        </h2>
+        <h2>{{promoDish.name}}</h2>
+        <h4>{{promoDish.price | currency}}</h4>
         <p>{{promoDish.description}}</p>
       </div>
     </div>
@@ -17,10 +17,10 @@
           This Month's Promotions
           <span class="badge badge-assertive">{{promotion.label}}</span>
         </div>
-        <div class="item item-thumbnail-left item-text-wrap">
+        <div class="item item-thumbnail-right item-text-wrap">
              <img ng-src="{{imgURL + promo.image + imgTail}}" alt="{{promo.name}}">
-              <h2>{{promo.name}}
-               <span class="badge">{{promo.price | currency}}</span></h2>
+              <h2>{{promo.name}}</h2>
+              <h4>{{promo.price | currency}}</h4>
               <p>{{promo.description}}</p>
         </div>
     </div>

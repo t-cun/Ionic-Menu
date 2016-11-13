@@ -2,16 +2,16 @@
   <div class="tabs-striped tabs-color-assertive">
     <ul class="tabs">
       <li ng-class="{active:isSelected(1)}" class="tab-item">
-        <a ng-click="select(1)">The Menu</a>
+        <a class="assertive" ng-click="select(1)">The Menu</a>
       </li>
       <li ng-class="{active:isSelected(2)}" class="tab-item">
-        <a ng-click="select(2)">Appetizers</a>
+        <a class="assertive" ng-click="select(2)">Appetizers</a>
       </li>
       <li ng-class="{active:isSelected(3)}" class="tab-item">
-        <a ng-click="select(3)">Entrees</a>
+        <a class="assertive" ng-click="select(3)">Entrees</a>
       </li>
       <li ng-class="{active:isSelected(4)}" class="tab-item">
-        <a ng-click="select(4)">Desserts</a>
+        <a class="assertive" ng-click="select(4)">Desserts</a>
       </li>
     </ul>
   </div>
@@ -24,7 +24,7 @@
           <span class="badge badge-assertive">{{dish.label}}</span>
         </h2>
         <p>{{dish.description}}</p>
-        <ion-option-button class="button-balanced icon ion-plus-circled" ng-click="addFavorite(dish.id)">
+        <ion-option-button class="button-energized icon ion-star" ng-click="addFavorite(dish.id)">
         </ion-option-button>
       </ion-item>
     </ion-list>
