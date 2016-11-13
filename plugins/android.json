@@ -7,6 +7,9 @@
         "files": {}
     },
     "installed_plugins": {
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
+        },
         "cordova-plugin-console": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         },
@@ -22,16 +25,13 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         },
-        "ionic-plugin-keyboard": {
+        "cordova-plugin-x-toast": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         },
         "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         },
-        "cordova-plugin-x-toast": {
-            "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
-        },
-        "cordova-plugin-camera": {
+        "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         }
     },
