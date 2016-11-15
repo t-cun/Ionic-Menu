@@ -14,6 +14,7 @@ angular.module('SpiceShack.controllers', [])
   $scope.reservation = {};
   $scope.registration = {};
   $scope.authObj = $firebaseAuth();
+  $scope.loggedIn = false;
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -34,8 +35,20 @@ angular.module('SpiceShack.controllers', [])
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
+    $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password).then(function(firebaseUser) {
+      console.log("Signed in as:", firebaseUser.uid);
+      $scope.loggedIn = true;
+      $scope.closeLogin();
+    }).catch(function(error) {
+      console.error("Authentication failed:", error);
+    });
     $localStorage.storeObject('userinfo', $scope.loginData);
   };
+
+  $scope.doLogout = function() {
+    $scope.authObj.$signOut();
+    $scope.loggedIn = false;
+  }
 
   $ionicModal.fromTemplateUrl('templates/reserve.html', {
     scope: $scope

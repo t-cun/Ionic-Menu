@@ -36,10 +36,13 @@
         <ion-item class="item-divider">
           Services
         </ion-item>
-        <ion-item menu-close ng-click="login()">
+        <ion-item menu-close ng-click="doLogout()" ng-show="loggedIn">
+          Sign Out
+        </ion-item>
+        <ion-item menu-close ng-click="login()" ng-show="!loggedIn">
           Login
         </ion-item>
-        <ion-item menu-close ng-click="register()">
+        <ion-item menu-close ng-click="register()" ng-show='!loggedIn'>
           Register
         </ion-item>
         <ion-item menu-close ng-click="reserve()">
