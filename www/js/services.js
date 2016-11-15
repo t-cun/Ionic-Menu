@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('SpiceShack.services', ['ngResource'])
-.constant('jsonURL', 'https://coursera-angular-js.firebaseio.com/')
-.constant('imgURL', 'https://firebasestorage.googleapis.com/v0/b/coursera-angular-js.appspot.com/o/')
+.constant('jsonURL', 'https://spiceshack-4b0b7.firebaseio.com/')
+.constant('imgURL', 'https://firebasestorage.googleapis.com/v0/b/spiceshack-4b0b7.appspot.com/o/')
 .constant('imgTail', '?alt=media&token=79907ce4-952b-486e-8b75-b338e478a6dc')
 
 .factory('menuFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
