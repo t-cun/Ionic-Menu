@@ -1,6 +1,6 @@
 angular.module('SpiceShack.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $firebaseAuth) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -13,6 +13,7 @@ angular.module('SpiceShack.controllers', [])
   $scope.loginData = $localStorage.getObject('userinfo', '{}');
   $scope.reservation = {};
   $scope.registration = {};
+  $scope.authObj = $firebaseAuth();
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -77,11 +78,13 @@ angular.module('SpiceShack.controllers', [])
 
   // Perform the registration action when the user submits the registration form
   $scope.doRegister = function () {
-      // Simulate a registration delay. Remove this and replace with your registration
-      // code if using a registration system
-      $timeout(function () {
-          $scope.closeRegister();
-      }, 1000);
+    $scope.authObj.$createUserWithEmailAndPassword($scope.registration.email, $scope.registration.password)
+      .then(function(firebaseUser) {
+        console.log("User " + firebaseUser.uid + " created successfully!");
+        $scope.closeRegister();
+      }).catch(function(error) {
+        console.error("Error: ", error);
+      });
   };
 
   $ionicPlatform.ready(function() {
