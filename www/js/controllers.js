@@ -1,6 +1,6 @@
 angular.module('SpiceShack.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $firebaseAuth, $cordovaToast) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $firebaseAuth, $firebaseObject, $cordovaToast) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -15,6 +15,9 @@ angular.module('SpiceShack.controllers', [])
   $scope.registration = {};
   $scope.authObj = $firebaseAuth();
   $scope.loggedIn = false;
+
+  var storageRef = firebase.storage().ref();
+  var databaseRef = firebase.database().ref();
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -103,8 +106,15 @@ angular.module('SpiceShack.controllers', [])
     $scope.authObj.$createUserWithEmailAndPassword($scope.registration.email, $scope.registration.password)
       .then(function(firebaseUser) {
         console.log("User " + firebaseUser.uid + " created successfully!");
-        var storageRef = firebase.storage().ref();
         var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
+
+        var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+        userRef.$loaded().then(function () {
+          console.log(userRef);
+          userRef.userData = $scope.registration;
+          userRef.$save();
+        })
+
         var blob = $scope.convertDataURL($scope.registration.imgSrc);
 
         imgRef.put(blob).then(function () {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('SpiceShack.services', ['ngResource'])
-.constant('jsonURL', 'https://spiceshack-4b0b7.firebaseio.com/')
+.constant('jsonURL', 'https://spiceshack-4b0b7.firebaseio.com/resources/')
 .constant('imgURL', 'https://firebasestorage.googleapis.com/v0/b/spiceshack-4b0b7.appspot.com/o/')
 .constant('imgTail', '?alt=media&token=79907ce4-952b-486e-8b75-b338e478a6dc')
 
