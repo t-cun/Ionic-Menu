@@ -41,6 +41,18 @@ angular.module('SpiceShack.controllers', [])
     $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password).then(function(firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
       $scope.loggedIn = true;
+
+      // download user profile data into a local object
+      var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+      userRef.$loaded().then(function () {
+        $cordovaToast.show('Welcome, ' + userRef.userData.firstName + '!', 'long', 'center')
+         .then(function(success) {
+           //success
+         }, function(error) {
+           //error
+         });
+      });
+
       $scope.closeLogin();
     }).catch(function(error) {
       console.error("Authentication failed:", error);
@@ -107,13 +119,16 @@ angular.module('SpiceShack.controllers', [])
       .then(function(firebaseUser) {
         console.log("User " + firebaseUser.uid + " created successfully!");
         var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
-
         var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+
         userRef.$loaded().then(function () {
-          console.log(userRef);
-          userRef.userData = $scope.registration;
+          userRef.userData = {};
+          userRef.userData.id = firebaseUser.uid;
+          userRef.userData.firstName = $scope.registration.firstName;
+          userRef.userData.lastName = $scope.registration.lastName;
+          userRef.userData.email = $scope.registration.email;
           userRef.$save();
-        })
+        });
 
         var blob = $scope.convertDataURL($scope.registration.imgSrc);
 
