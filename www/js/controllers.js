@@ -1,6 +1,6 @@
 angular.module('SpiceShack.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $firebaseAuth) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $firebaseAuth, $cordovaToast) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -89,11 +89,33 @@ angular.module('SpiceShack.controllers', [])
       $scope.registerForm.show();
   };
 
+  $scope.convertDataURL = function (dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+  };
+
   // Perform the registration action when the user submits the registration form
   $scope.doRegister = function () {
     $scope.authObj.$createUserWithEmailAndPassword($scope.registration.email, $scope.registration.password)
       .then(function(firebaseUser) {
         console.log("User " + firebaseUser.uid + " created successfully!");
+        var storageRef = firebase.storage().ref();
+        var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
+        var blob = $scope.convertDataURL($scope.registration.imgSrc);
+
+        imgRef.put(blob).then(function () {
+          $cordovaToast.show('Registration Successful!', 'long', 'center')
+           .then(function(success) {
+             //success
+           }, function(error) {
+             //error
+           });
+        });
+
         $scope.closeRegister();
       }).catch(function(error) {
         console.error("Error: ", error);
