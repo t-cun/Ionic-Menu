@@ -12,34 +12,34 @@
           <span class="input-label">Your Picture</span>
         </label>
         <label class="item item-thumbnail-left item-avatar">
-          <img ng-src="{{registration.imgSrc}}">
+          <img ng-src="{{registrationData.imgSrc}}">
         </label>
         <label class="item">
           <button class="button button-block button-positive" type="button" ng-click="takePicture()">Take Picture</button>
         </label>
         <label class="item item-input">
           <span class="input-label">First Name</span>
-          <input type="text" ng-model="registration.firstName">
+          <input type="text" ng-model="registrationData.firstName">
         </label>
         <label class="item item-input">
           <span class="input-label">Last Name</span>
-          <input type="text" ng-model="registration.lastName">
+          <input type="text" ng-model="registrationData.lastName">
         </label>
         <label class="item item-input">
           <span class="input-label">Email</span>
-          <input type="email" ng-model="registration.email">
+          <input type="email" ng-model="registrationData.email">
         </label>
         <label class="item item-input">
           <span class="input-label">Password</span>
-          <input type="password" ng-model="registration.password">
+          <input type="password" ng-model="registrationData.password">
         </label>
         <label class="item">
           <button class="button button-block button-positive" type="submit">Register</button>
         </label>
       </div>
     </form>
-    <ion-item ng-show="registrationError.error">
-      <a class="assertive"><i class="icon ion-close-circled"></i>&nbsp;&nbsp;&nbsp;Error: {{registrationError.msg}}</a>
+    <ion-item ng-show="authError.error">
+      <a class="assertive"><i class="icon ion-close-circled"></i>&nbsp;&nbsp;&nbsp;Error: {{authError.msg}}</a>
     </ion-item>
   </ion-content>
 </ion-modal-view>

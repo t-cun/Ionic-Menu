@@ -19,13 +19,14 @@
         <label class="item">
           <button class="button button-block button-positive" type="submit">Log in</button>
         </label>
-        <label class="item">
+        <!--  To be Implemented -->
+        <!-- <label class="item">
           <button class="button button-block button-positive">Forgot password?</button>
-        </label>
+        </label> -->
       </div>
     </form>
-    <ion-item ng-show="loginError.error">
-      <a class="assertive"><i class="icon ion-close-circled"></i>&nbsp;&nbsp;&nbsp;Error: {{loginError.msg}}</a>
+    <ion-item ng-show="authError.error">
+      <a class="assertive"><i class="icon ion-close-circled"></i>&nbsp;&nbsp;&nbsp;Error: {{authError.msg}}</a>
     </ion-item>
   </ion-content>
 </ion-modal-view>

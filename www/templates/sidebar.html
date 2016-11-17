@@ -38,7 +38,7 @@
         </ion-item>
         <ion-item class="item item-avatar" ng-show="loggedIn">
           <img ng-src="{{ userImage }}">
-          <div class="item-text-center">Hello, {{ userData.firstName }}</div>
+          <div class="item-text-center">Hello, {{ loginData.firstName }}</div>
         </ion-item>
         <ion-item menu-close ng-click="doLogout()" ng-show="loggedIn">
           Sign Out
