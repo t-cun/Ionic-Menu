@@ -1,27 +1,23 @@
 angular.module('SpiceShack.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $firebaseAuth, $firebaseObject, $cordovaToast) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicPlatform, $cordovaCamera, $firebaseAuth, $firebaseObject, $cordovaToast) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  // Form data for the login modal
-  $scope.loginData = $localStorage.getObject('userinfo', '{}');
-  $scope.userData = {};
-  $scope.reservation = {};
-  $scope.registration = {};
-  $scope.registrationError = {};
-  $scope.loginError = {};
   $scope.authObj = $firebaseAuth();
-  $scope.loggedIn = false;
-  $scope.registrationError.error = false;
-
   var storageRef = firebase.storage().ref();
   var databaseRef = firebase.database().ref();
+  var userObj;
+  var imgRef;
+
+  // Form data for the login modal
+  $scope.reservationData = {};
+  $scope.loginData = {};
+  $scope.registrationData = {};
+
+  $scope.loggedIn = false;
+  $scope.authError = {};
+  $scope.authError.error = false;
+
+
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -32,6 +28,7 @@ angular.module('SpiceShack.controllers', [])
 
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
+    $scope.authError.error = false;
     $scope.modal.hide();
   };
 
@@ -48,46 +45,42 @@ angular.module('SpiceShack.controllers', [])
         $scope.loggedIn = true;
 
         // download user profile data into a local object
-        var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
-        var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
+        userObj = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+        imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
 
-        imgRef.getDownloadURL().then(function(url) {
-          // Get the download URL for 'images/stars.jpg'
-          $scope.userImage = url;
-        }).catch(function(error) {
+        imgRef.getDownloadURL()
+          .then(function(url) {
+            // Get the download URL for 'users/{uid}/profile.jpg'
+            $scope.userImage = url;
+          })
+          .catch(function(error) {
           // Handle any errors
         });
 
-        userRef.$loaded().then(function () {
-          $scope.userData = userRef.userData;
+        userObj.$loaded().then(function () {
+          $scope.loginData = userObj.userData;
           $scope.closeLogin();
-          $cordovaToast.show('Welcome, ' + userRef.userData.firstName + '!', 'long', 'center')
-           .then(function(success) {
-             //success
-           }, function(error) {
-             //error
-           });
+          $cordovaToast.show('Welcome, ' + userObj.userData.firstName + '!', 'long', 'center');
         });
 
-      }).catch( function(error) {
-        console.error("Authentication failed:", error);
-        $scope.loginError.error = true;
-        $scope.loginError.msg = error.message;
-      });
-
-
-    $localStorage.storeObject('userinfo', $scope.loginData);
+      })
+      .catch( function(error) {
+        $scope.authError.msg = error.message;
+        $scope.authError.error = true;
+    });
   };
 
   $scope.doLogout = function() {
-    $scope.authObj.$signOut();
+    userObj.$destroy();
     $scope.loggedIn = false;
+    $scope.authObj.$signOut().then(function () {
+      $cordovaToast.show('Signed out.', 'long', 'center');
+    });
   }
 
-  $ionicModal.fromTemplateUrl('templates/reserve.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.reserveForm = modal;
+  $ionicModal.fromTemplateUrl('templates/reserve.html', { scope: $scope })
+    .then(function(modal) {
+      $scope.reserveForm = modal;
   });
 
   $scope.closeReserve = function() {
@@ -115,18 +108,20 @@ angular.module('SpiceShack.controllers', [])
 
   // Triggered in the registration modal to close it
   $scope.closeRegister = function () {
-      $scope.registerForm.hide();
+    $scope.authError.error = false;
+    $scope.registerForm.hide();
   };
 
   // Open the registration modal
   $scope.register = function () {
-      $scope.registerForm.show();
+    $scope.registerForm.show();
   };
 
+  // Convert cordovaDataURL to Blob to be uploaded to Firebase
   $scope.convertDataURL = function (dataurl) {
     var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
+    while(n--) {
         u8arr[n] = bstr.charCodeAt(n);
     }
     return new Blob([u8arr], {type:mime});
@@ -134,33 +129,36 @@ angular.module('SpiceShack.controllers', [])
 
   // Perform the registration action when the user submits the registration form
   $scope.doRegister = function () {
-    $scope.authObj.$createUserWithEmailAndPassword($scope.registration.email, $scope.registration.password)
+    $scope.authObj.$createUserWithEmailAndPassword($scope.registrationData.email, $scope.registrationData.password)
       .then(function(firebaseUser) {
-        console.log("User " + firebaseUser.uid + " created successfully!");
-        var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
-        var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
-
         $scope.loggedIn = true;
-        userRef.$loaded().then(function () {
-          userRef.userData = {};
-          userRef.userData.id = firebaseUser.uid;
-          userRef.userData.firstName = $scope.registration.firstName;
-          userRef.userData.lastName = $scope.registration.lastName;
-          userRef.userData.email = $scope.registration.email;
-          userRef.$save();
+
+        // Prepare to upload user image and user data to firebase
+        imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
+        userObj = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+
+        // Once user reference has loaded, create object and save to database
+        userObj.$loaded().then(function () {
+          userObj.userData = {};
+          userObj.userData.id = firebaseUser.uid;
+          userObj.userData.firstName = $scope.registrationData.firstName;
+          userObj.userData.lastName = $scope.registrationData.lastName;
+          userObj.userData.email = $scope.registrationData.email;
+          $scope.loginData = userObj.userData;
+          userObj.$save();
         });
 
-        var blob = $scope.convertDataURL($scope.registration.imgSrc);
-
+        // Create blob from user image and upload to Firebase
+        var blob = $scope.convertDataURL($scope.registrationData.imgSrc);
         imgRef.put(blob).then(function () {
+          $scope.userImage = $scope.registrationData.imgSrc;
           $scope.closeRegister();
           $cordovaToast.show('Registration Successful! Logged in.', 'long', 'center');
         });
 
       }).catch(function(error) {
-        console.error("Registration Error: ", error);
-        $scope.registrationError.error = true;
-        $scope.registrationError.msg = error.message;
+        $scope.authError.msg = error.message;
+        $scope.authError.error = true;
       });
   };
 
@@ -178,7 +176,7 @@ angular.module('SpiceShack.controllers', [])
     };
     $scope.takePicture = function() {
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+          $scope.registrationData.imgSrc = "data:image/jpeg;base64," + imageData;
       }, function(err) {
           console.log(err);
       });
