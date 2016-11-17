@@ -24,5 +24,8 @@
         </label>
       </div>
     </form>
+    <ion-item ng-show="loginError.error">
+      <a class="assertive"><i class="icon ion-close-circled"></i>&nbsp;&nbsp;&nbsp;Error: {{loginError.msg}}</a>
+    </ion-item>
   </ion-content>
 </ion-modal-view>

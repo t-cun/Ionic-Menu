@@ -38,5 +38,8 @@
         </label>
       </div>
     </form>
+    <ion-item ng-show="registrationError.error">
+      <a class="assertive"><i class="icon ion-close-circled"></i>&nbsp;&nbsp;&nbsp;Error: {{registrationError.msg}}</a>
+    </ion-item>
   </ion-content>
 </ion-modal-view>

@@ -13,8 +13,11 @@ angular.module('SpiceShack.controllers', [])
   $scope.loginData = $localStorage.getObject('userinfo', '{}');
   $scope.reservation = {};
   $scope.registration = {};
+  $scope.registrationError = {};
+  $scope.loginError = {};
   $scope.authObj = $firebaseAuth();
   $scope.loggedIn = false;
+  $scope.registrationError.error = false;
 
   var storageRef = firebase.storage().ref();
   var databaseRef = firebase.database().ref();
@@ -38,25 +41,30 @@ angular.module('SpiceShack.controllers', [])
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
-    $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password).then(function(firebaseUser) {
-      console.log("Signed in as:", firebaseUser.uid);
-      $scope.loggedIn = true;
+    $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password)
+      .then(function(firebaseUser) {
+        console.log("Signed in as:", firebaseUser.uid);
+        $scope.loggedIn = true;
 
-      // download user profile data into a local object
-      var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
-      userRef.$loaded().then(function () {
-        $cordovaToast.show('Welcome, ' + userRef.userData.firstName + '!', 'long', 'center')
-         .then(function(success) {
-           //success
-         }, function(error) {
-           //error
-         });
+        // download user profile data into a local object
+        var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+        userRef.$loaded().then(function () {
+          $cordovaToast.show('Welcome, ' + userRef.userData.firstName + '!', 'long', 'center')
+           .then(function(success) {
+             //success
+           }, function(error) {
+             //error
+           });
+        });
+
+        $scope.closeLogin();
+      }).catch( function(error) {
+        console.error("Authentication failed:", error);
+        $scope.loginError.error = true;
+        $scope.loginError.msg = error.message;
       });
 
-      $scope.closeLogin();
-    }).catch(function(error) {
-      console.error("Authentication failed:", error);
-    });
+
     $localStorage.storeObject('userinfo', $scope.loginData);
   };
 
@@ -138,7 +146,9 @@ angular.module('SpiceShack.controllers', [])
         });
 
       }).catch(function(error) {
-        console.error("Error: ", error);
+        console.error("Registration Error: ", error);
+        $scope.registrationError.error = true;
+        $scope.registrationError.msg = error.message;
       });
   };
 
