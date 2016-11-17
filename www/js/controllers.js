@@ -11,6 +11,7 @@ angular.module('SpiceShack.controllers', [])
 
   // Form data for the login modal
   $scope.loginData = $localStorage.getObject('userinfo', '{}');
+  $scope.userData = {};
   $scope.reservation = {};
   $scope.registration = {};
   $scope.registrationError = {};
@@ -48,7 +49,18 @@ angular.module('SpiceShack.controllers', [])
 
         // download user profile data into a local object
         var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
+        var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
+
+        imgRef.getDownloadURL().then(function(url) {
+          // Get the download URL for 'images/stars.jpg'
+          $scope.userImage = url;
+        }).catch(function(error) {
+          // Handle any errors
+        });
+
         userRef.$loaded().then(function () {
+          $scope.userData = userRef.userData;
+          $scope.closeLogin();
           $cordovaToast.show('Welcome, ' + userRef.userData.firstName + '!', 'long', 'center')
            .then(function(success) {
              //success
@@ -57,7 +69,6 @@ angular.module('SpiceShack.controllers', [])
            });
         });
 
-        $scope.closeLogin();
       }).catch( function(error) {
         console.error("Authentication failed:", error);
         $scope.loginError.error = true;
@@ -129,6 +140,7 @@ angular.module('SpiceShack.controllers', [])
         var imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
         var userRef = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
 
+        $scope.loggedIn = true;
         userRef.$loaded().then(function () {
           userRef.userData = {};
           userRef.userData.id = firebaseUser.uid;
@@ -142,7 +154,7 @@ angular.module('SpiceShack.controllers', [])
 
         imgRef.put(blob).then(function () {
           $scope.closeRegister();
-          $cordovaToast.show('Registration Successful!', 'long', 'center');
+          $cordovaToast.show('Registration Successful! Logged in.', 'long', 'center');
         });
 
       }).catch(function(error) {
