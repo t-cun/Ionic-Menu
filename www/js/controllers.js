@@ -133,15 +133,10 @@ angular.module('SpiceShack.controllers', [])
         var blob = $scope.convertDataURL($scope.registration.imgSrc);
 
         imgRef.put(blob).then(function () {
-          $cordovaToast.show('Registration Successful!', 'long', 'center')
-           .then(function(success) {
-             //success
-           }, function(error) {
-             //error
-           });
+          $scope.closeRegister();
+          $cordovaToast.show('Registration Successful!', 'long', 'center');
         });
 
-        $scope.closeRegister();
       }).catch(function(error) {
         console.error("Error: ", error);
       });
@@ -165,9 +160,6 @@ angular.module('SpiceShack.controllers', [])
       }, function(err) {
           console.log(err);
       });
-
-      $scope.registerForm.show();
-
     };
   });
 
