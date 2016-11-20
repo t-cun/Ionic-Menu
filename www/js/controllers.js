@@ -1,23 +1,25 @@
 angular.module('SpiceShack.controllers', [])
 
+/* Initial controller loaded when app starts - handles all login/registration *
+ * functionality                                                              */
 .controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicPlatform, $cordovaCamera, $firebaseAuth, $firebaseObject, $cordovaToast) {
 
-  $scope.authObj = $firebaseAuth();
+  // Store firebase reference variables
+  var authObj = $firebaseAuth();
   var storageRef = firebase.storage().ref();
   var databaseRef = firebase.database().ref();
   var userObj;
   var imgRef;
 
-  // Form data for the login modal
+  // Form data for the modals
   $scope.reservationData = {};
   $scope.loginData = {};
   $scope.registrationData = {};
 
+  // Storage for current login information, object for error handling
   $scope.loggedIn = false;
   $scope.authError = {};
   $scope.authError.error = false;
-
-
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -39,15 +41,18 @@ angular.module('SpiceShack.controllers', [])
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
-    $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password)
+
+    // Call to default firebase function passing user data from modal
+    authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password)
       .then(function(firebaseUser) {
-        console.log("Signed in as:", firebaseUser.uid);
+        // Login was Successful, set session bool
         $scope.loggedIn = true;
 
-        // download user profile data into a local object
+        // Download user profile data into a local object
         userObj = $firebaseObject(databaseRef.child('users/' + firebaseUser.uid));
         imgRef = storageRef.child('users/' + firebaseUser.uid + '/profile.jpg');
 
+        // Download user image from firebase storage
         imgRef.getDownloadURL()
           .then(function(url) {
             // Get the download URL for 'users/{uid}/profile.jpg'
@@ -57,6 +62,7 @@ angular.module('SpiceShack.controllers', [])
           // Handle any errors
         });
 
+        // Once the object has been safely loaded, populate page with information
         userObj.$loaded().then(function () {
           $scope.loginData = userObj.userData;
           $scope.closeLogin();
@@ -70,14 +76,20 @@ angular.module('SpiceShack.controllers', [])
     });
   };
 
+  // Perform logout - triggered by sign out button in sidebar
   $scope.doLogout = function() {
+
+    // Destroy current firebase user object to avoid attempted changes after logout
     userObj.$destroy();
     $scope.loggedIn = false;
-    $scope.authObj.$signOut().then(function () {
+
+    // Call Firebase signOut function and send toast notification to users
+    authObj.$signOut().then(function () {
       $cordovaToast.show('Signed out.', 'long', 'center');
     });
   }
 
+  // Create reservation modal
   $ionicModal.fromTemplateUrl('templates/reserve.html', { scope: $scope })
     .then(function(modal) {
       $scope.reserveForm = modal;
@@ -129,8 +141,10 @@ angular.module('SpiceShack.controllers', [])
 
   // Perform the registration action when the user submits the registration form
   $scope.doRegister = function () {
-    $scope.authObj.$createUserWithEmailAndPassword($scope.registrationData.email, $scope.registrationData.password)
+    // Call to default firebase function passing user data from modal
+    authObj.$createUserWithEmailAndPassword($scope.registrationData.email, $scope.registrationData.password)
       .then(function(firebaseUser) {
+        // registration authenticates user - set session variable
         $scope.loggedIn = true;
 
         // Prepare to upload user image and user data to firebase
@@ -162,29 +176,35 @@ angular.module('SpiceShack.controllers', [])
       });
   };
 
+  // do not define options or takePicture until ionicPlatform signals it is ready
   $ionicPlatform.ready(function() {
+
+    // camera options passed into takePicture
     var options = {
-        quality: 50,
-        destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.CAMERA,
-        allowEdit: true,
-        encodingType: Camera.EncodingType.JPEG,
-        targetWidth: 100,
-        targetHeight: 100,
-        popoverOptions: CameraPopoverOptions,
-        saveToPhotoAlbum: false
+      quality: 50,
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      allowEdit: true,
+      encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 100,
+      targetHeight: 100,
+      //popoverOptions: CameraPopoverOptions,
+      saveToPhotoAlbum: false
     };
+
+    // takePicture used during registration
     $scope.takePicture = function() {
       $cordovaCamera.getPicture(options).then(function(imageData) {
           $scope.registrationData.imgSrc = "data:image/jpeg;base64," + imageData;
       }, function(err) {
-          console.log(err);
+          // Error
       });
     };
   });
-
 })
 
+/* MenuController - manages menu view, including tabs, display, and ability   *
+ * for adding dishes to favorites                                             */
 .controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory',
                                'dishes', 'imgURL', 'imgTail', '$ionicListDelegate',
                                '$ionicPlatform', '$cordovaLocalNotification',
@@ -192,15 +212,15 @@ angular.module('SpiceShack.controllers', [])
                                 favoriteFactory, dishes, imgURL, imgTail,
                                 $ionicListDelegate, $ionicPlatform,
                                 $cordovaLocalNotification, $cordovaToast) {
+
+  // store default controller variables
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.tab = 1;
   $scope.orderText = '';
-  $scope.showDetails = false;
-  $scope.showMenu = false;
-  $scope.message = 'Loading...';
   $scope.dishes = dishes;
 
+  // filters appropriate dishes based on current menu tab
   $scope.select = function(setTab) {
     $scope.tab = setTab;
 
@@ -215,13 +235,12 @@ angular.module('SpiceShack.controllers', [])
     }
   };
 
+  // return tab selection bool
   $scope.isSelected = function(tab) {
     return $scope.tab === tab;
   };
-  $scope.toggleDetails = function() {
-    $scope.showDetails = !$scope.showDetails;
-  };
 
+  // add dish to favorite list and notify the user
   $scope.addFavorite = function(index) {
     favoriteFactory.addToFavorites(index);
     $ionicListDelegate.closeOptionButtons();
@@ -240,9 +259,10 @@ angular.module('SpiceShack.controllers', [])
        });
     });
   };
-
 }])
 
+/* ContactController - basic contact controller to be implemented             *
+ *                                                                            */
 .controller('ContactController', ['$scope', function($scope) {
   $scope.feedback = { mychannel:"", firstName:"",
   lastName:"", agree:false, email:""};
@@ -255,23 +275,8 @@ angular.module('SpiceShack.controllers', [])
 
 }])
 
-.controller('FeedbackController', ['$scope', 'feedbackFactory',
-                                  function($scope, feedbackFactory) {
-
-  $scope.sendFeedback = function() {
-    if ($scope.feedback.agree && ($scope.feedback.mychannel === "")&& !$scope.feedback.mychannel) {
-      $scope.invalidChannelSelection = true;
-    } else {
-      // Submission action
-      feedbackFactory.putFeedback().add($scope.feedback);
-      $scope.invalidChannelSelection = false;
-      $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
-      $scope.feedback.mychannel="";
-      $scope.feedbackForm.$setPristine();
-    }
-  };
-}])
-
+/* DishDetailController - display dish details as well as add favorite        *
+ * capability and add comment to dish                                         */
 .controller('DishDetailController', ['$scope', '$stateParams', 'dish',
                                      'menuFactory', 'favoriteFactory', 'imgURL',
                                      'imgTail', '$ionicModal', '$ionicPopover',
@@ -280,10 +285,13 @@ angular.module('SpiceShack.controllers', [])
                                      menuFactory, favoriteFactory, imgURL,
                                      imgTail, $ionicModal, $ionicPopover,
                                      $cordovaLocalNotification, $cordovaToast) {
+
+  // store default controller variables
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
   $scope.dish = dish;
 
+  // open popover event
   $scope.openPopover = function($event) {
     $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', {
       scope: $scope,
@@ -293,6 +301,7 @@ angular.module('SpiceShack.controllers', [])
     });
   };
 
+  // add comment modal creation and display
   $scope.showCommentForm = function() {
     $scope.comment = { rating:"5", comment:"", author:"", date: new Date()};
     $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
@@ -303,6 +312,7 @@ angular.module('SpiceShack.controllers', [])
     });
   };
 
+  // add favorite functionality
   $scope.addFavorite = function(index) {
     $cordovaLocalNotification.schedule({
       id: 1,
@@ -320,37 +330,32 @@ angular.module('SpiceShack.controllers', [])
      });
   };
 
+  // closes popover and comment modal
   $scope.closeCommentForm = function() {
     $scope.popover.hide();
     $scope.commentForm.hide();
   }
 
+  // push comment to dish in firebase database
   $scope.addComment = function(comment) {
     $scope.dish.comments.push(comment);
     menuFactory.update({id:$scope.dish.id},$scope.dish);
   };
 
+  // comment submission button press
   $scope.postComment = function() {
     $scope.closeCommentForm();
     $scope.addComment($scope.comment);
   };
 
+  // remove popover when hidden
   $scope.$on('popover.hidden', function() {
-      // console.log("popover hidden");
-      $scope.popover.remove();
-  });
-    // Execute action on remove popover
-  $scope.$on('popover.removed', function() {
-      // console.log("popover removed");
+    $scope.popover.remove();
   });
 
+  // remove modal when hidden
   $scope.$on('modal.hidden', function() {
-      // console.log("commentForm hidden");
-      $scope.commentForm.remove();
-  });
-
-  $scope.$on('modal.removed', function() {
-      // console.log("commentForm removed");
+    $scope.commentForm.remove();
   });
 }])
 
@@ -362,13 +367,10 @@ angular.module('SpiceShack.controllers', [])
                                 imgURL, imgTail) {
   $scope.imgURL = imgURL;
   $scope.imgTail = imgTail;
-  $scope.showDish = false;
-  $scope.showPromo = false;
-  $scope.showLeader = false;
-  $scope.message = 'Loading...';
   $scope.promoDish = promoDish;
   $scope.promo = promo;
   $scope.promoLeader = promoLeader;
+
 }])
 
 .controller('AboutController', ['$scope', 'corporateFactory', 'leaders',
