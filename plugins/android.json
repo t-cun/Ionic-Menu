@@ -36,6 +36,12 @@
         },
         "cordova-plugin-vibration": {
             "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
+        },
+        "cordova-plugin-firebase": {
+            "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
+        },
+        "cordova-custom-config": {
+            "PACKAGE_NAME": "com.ionicframework.spiceshackionic256949"
         }
     },
     "dependent_plugins": {

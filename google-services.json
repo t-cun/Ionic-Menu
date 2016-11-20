@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "411046149155",
+    "firebase_url": "https://spiceshack-4b0b7.firebaseio.com",
+    "project_id": "spiceshack-4b0b7",
+    "storage_bucket": "spiceshack-4b0b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411046149155:android:0f5901f029debc9b",
+        "android_client_info": {
+          "package_name": "com.ionicframework.spiceshackionic256949"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411046149155-esspnmkdigepk9a84je89ihh033b2ubd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxMrVEfSdbCGP_3ICVe31qOd6zaJHgHYc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

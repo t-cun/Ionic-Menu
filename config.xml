@@ -1,5 +1,5 @@
-<?xml version="2" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.spiceshackionic256949" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<widget id="com.ionicframework.spiceshackionic256949" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>SpiceShack</name>
   <description>&#xD;&#xD;
         A simple menu app for the Hong Kong based eatery Spice Shack&#xD;&#xD;
@@ -17,7 +17,7 @@
   <preference name="SplashScreen" value="screen"/>
   <preference name="AutoHideSplashScreen" value="false"/>
   <preference name="SplashScreenDelay" value="3000"/>
-  <preference name="ShowSplashScreenSpinner" value="false" />
+  <preference name="ShowSplashScreenSpinner" value="false"/>
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
@@ -28,6 +28,10 @@
   <plugin name="cordova-plugin-statusbar" spec="~2.2.0"/>
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1"/>
   <platform name="android">
+    <config-file target="AndroidManifest.xml" parent="./application">
+      <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/fcm_push_icon"/>
+      <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/red"/>
+    </config-file>
     <icon src="resources\android\icon\drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources\android\icon\drawable-mdpi-icon.png" density="mdpi"/>
     <icon src="resources\android\icon\drawable-hdpi-icon.png" density="hdpi"/>
