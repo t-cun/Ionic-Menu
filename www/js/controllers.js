@@ -261,20 +261,6 @@ angular.module('SpiceShack.controllers', [])
   };
 }])
 
-/* ContactController - basic contact controller to be implemented             *
- *                                                                            */
-.controller('ContactController', ['$scope', function($scope) {
-  $scope.feedback = { mychannel:"", firstName:"",
-  lastName:"", agree:false, email:""};
-
-  var channels = [{value:"tel", label:"Tel."},
-  {value:"Email",label:"Email"}];
-
-  $scope.channels = channels;
-  $scope.invalidChannelSelection = false;
-
-}])
-
 /* DishDetailController - display dish details as well as add favorite        *
  * capability and add comment to dish                                         */
 .controller('DishDetailController', ['$scope', '$stateParams', 'dish',
@@ -359,6 +345,7 @@ angular.module('SpiceShack.controllers', [])
   });
 }])
 
+/* IndexController - display promotional information on app startup           */
 .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory',
                                 'promotionFactory', 'promoDish', 'promo',
                                 'promoLeader', 'imgURL', 'imgTail',
@@ -373,6 +360,7 @@ angular.module('SpiceShack.controllers', [])
 
 }])
 
+/* AboutController - display corporate leadership data                        */
 .controller('AboutController', ['$scope', 'corporateFactory', 'leaders',
                                 'imgURL', 'imgTail', function($scope,
                                 corporateFactory, leaders, imgURL, imgTail) {
@@ -382,6 +370,8 @@ angular.module('SpiceShack.controllers', [])
   $scope.leaders = leaders;
 }])
 
+/* FavoritesController - retrieve dish information from firebase and          *
+ * implement favorite add/delete functionality                                */
 .controller('FavoritesController', ['$scope', 'dishes', 'favoriteFactory',
                                     'imgURL', 'imgTail', '$ionicListDelegate',
                                     '$ionicPopup', '$ionicLoading', '$cordovaToast',
@@ -390,6 +380,8 @@ angular.module('SpiceShack.controllers', [])
                                     $ionicPopup, $ionicLoading, $cordovaToast,
                                     $cordovaVibration) {
 
+  // On load of favorites page, hide delete button if previously left open,
+  // and populate list with favorites
   $scope.$on('$ionicView.enter', function(e) {
     $scope.showDelete = false;
     $scope.favorites = favoriteFactory.getFavorites();
@@ -399,10 +391,12 @@ angular.module('SpiceShack.controllers', [])
   $scope.imgTail = imgTail;
   $scope.dishes = dishes;
 
+  // Used to toggle delete button visibility
   $scope.toggleDelete = function() {
     $scope.showDelete = !$scope.showDelete;
   };
 
+  // Popup confirmation, vibrate and notify on deletion
   $scope.deleteFavorite = function(index) {
     var confirmPopup = $ionicPopup.confirm({
       title: 'Confirm Delete',
@@ -429,6 +423,7 @@ angular.module('SpiceShack.controllers', [])
 
 }])
 
+/* favoriteFilter - custom filter to filter dishes and return only favorited  */
 .filter('favoriteFilter', function() {
   return function(dishes, favorites) {
     var out = [];

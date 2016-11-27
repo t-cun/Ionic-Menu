@@ -1,22 +1,27 @@
 'use strict';
 
 angular.module('SpiceShack.services', ['ngResource'])
+
+// Store constants for data retreival with API calls
 .constant('jsonURL', 'https://spiceshack-4b0b7.firebaseio.com/resources/')
 .constant('imgURL', 'https://firebasestorage.googleapis.com/v0/b/spiceshack-4b0b7.appspot.com/o/staff%2F')
 .constant('imgTail', '?alt=media&token=79907ce4-952b-486e-8b75-b338e478a6dc')
 
+// menuFactory used to return all dish data from menu
 .factory('menuFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
 
   return $resource(jsonURL + 'dishes/:id' + '.json', null, {'update':{method:'PUT'}});
 
 }])
 
+// promotionFactory used to return promotion data
 .factory('promotionFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
 
   return $resource(jsonURL + 'promotions/:id' + '.json');
 
 }])
 
+// corporateFactory used to return corporate leadership data
 .factory('corporateFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
   var leadership = $resource(jsonURL + 'leadership/:id' + '.json' , null, {'update':{method:'PUT'}});
 
@@ -27,6 +32,7 @@ angular.module('SpiceShack.services', ['ngResource'])
   };
 }])
 
+// feedbackFactory used to push feedback to the firebase database
 .factory('feedbackFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
   var feedback = $resource(jsonURL + 'feedback/:id' + '.json' , null, {'add':{method:'POST'}});
 
@@ -37,6 +43,7 @@ angular.module('SpiceShack.services', ['ngResource'])
   };
 }])
 
+// favoriteFactory used to add, delete, and retrieve favorites data from firebase
 .factory('favoriteFactory', ['$resource', '$localStorage', function($resource, $localStorage) {
   var favFac = {};
   var favorites = [];
@@ -66,6 +73,7 @@ angular.module('SpiceShack.services', ['ngResource'])
   return favFac;
 }])
 
+// $localStorage defines functions used to store objects locally
 .factory('$localStorage', ['$window', function($window) {
   return {
       store: function(key, value) {
