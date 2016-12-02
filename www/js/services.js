@@ -5,7 +5,7 @@ angular.module('SpiceShack.services', ['ngResource'])
 // Store constants for data retreival with API calls
 .constant('jsonURL', 'https://spiceshack-4b0b7.firebaseio.com/resources/')
 .constant('imgURL', 'https://firebasestorage.googleapis.com/v0/b/spiceshack-4b0b7.appspot.com/o/staff%2F')
-.constant('imgTail', '?alt=media&token=79907ce4-952b-486e-8b75-b338e478a6dc')
+.constant('imgTail', '?alt=media')
 
 // menuFactory used to return all dish data from menu
 .factory('menuFactory', ['$resource', 'jsonURL', function($resource, jsonURL) {
